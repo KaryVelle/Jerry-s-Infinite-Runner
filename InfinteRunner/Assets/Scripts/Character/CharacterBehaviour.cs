@@ -9,6 +9,7 @@ namespace Character
         [SerializeField] public float doubleTapTime;
         [SerializeField] private float crouchScaleY = 0.5f;
         [SerializeField] private float fallGravityMultiplier = 2f;
+        public bool isCrouchingNow;
 
         private Rigidbody2D _rb;
         [SerializeField] public bool isGrounded;
@@ -35,6 +36,7 @@ namespace Character
             {
                 _rb.gravityScale = baseGravity * (isUp ? 1 : -1);
             }
+            Crouch(isCrouchingNow);
         }
 
         public void HandleJump()
@@ -67,14 +69,19 @@ namespace Character
 
         public void HandleCrouch(bool isCrouching)
         {
+            isCrouchingNow = isCrouching;
+            if (!isGrounded)
+            {
+                isCrouchingInAir = isCrouching;
+            }
+        }
+
+        public void Crouch(bool isCrouching)
+        {
             if (isGrounded)
             {
                 float targetScaleY = isCrouching ? crouchScaleY : originalScaleY;
                 transform.localScale = new Vector3(transform.localScale.x, targetScaleY, transform.localScale.z);
-            }
-            else
-            {
-                isCrouchingInAir = isCrouching;
             }
         }
 
